@@ -1,0 +1,14 @@
+{
+    "name": "jonnyynnoj/haxball-roomlist-parser",
+    "description": "Parses the haxball roomlist",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "RoomlistParser\\": "src/"
+        }
+    },
+    "require": {
+        "mdurrant/php-binary-reader": "^1.0.8"
+    }
+}
