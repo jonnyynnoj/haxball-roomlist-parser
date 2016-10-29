@@ -7,7 +7,7 @@ use PhpBinaryReader\Endian;
 
 class Parser
 {
-    const URL = 'http://haxball.com/lis3';
+    const URL = 'http://haxball.com/list3';
     private $data;
 
     public function __construct()
