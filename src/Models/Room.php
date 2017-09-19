@@ -4,14 +4,31 @@ namespace RoomlistParser\Models;
 
 class Room implements \JsonSerializable
 {
+    /** @var int */
     private $version;
+
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $name;
+
+    /** @var int */
     private $players;
+
+    /** @var int */
     private $maxPlayers;
+
+    /** @var bool */
     private $passworded;
+
+    /** @var string */
     private $country;
+
+    /** @var float */
     private $lat;
+
+    /** @var float */
     private $lon;
 
     public function jsonSerialize()
@@ -32,7 +49,6 @@ class Room implements \JsonSerializable
     public function setVersion($version)
     {
         $this->version = (int) $version;
-
         return $this;
     }
 
@@ -44,7 +60,6 @@ class Room implements \JsonSerializable
     public function setId($id)
     {
         $this->id = (string) $id;
-
         return $this;
     }
 
@@ -56,7 +71,6 @@ class Room implements \JsonSerializable
     public function setName($name)
     {
         $this->name = (string) $name;
-
         return $this;
     }
 
@@ -68,7 +82,6 @@ class Room implements \JsonSerializable
     public function setPlayers($players)
     {
         $this->players = (int) $players;
-
         return $this;
     }
 
@@ -80,7 +93,6 @@ class Room implements \JsonSerializable
     public function setMaxPlayers($maxPlayers)
     {
         $this->maxPlayers = (int) $maxPlayers;
-
         return $this;
     }
 
@@ -92,7 +104,6 @@ class Room implements \JsonSerializable
     public function setPassworded($passworded)
     {
         $this->passworded = (bool) $passworded;
-
         return $this;
     }
 
@@ -104,7 +115,6 @@ class Room implements \JsonSerializable
     public function setCountry($country)
     {
         $this->country = (string) $country;
-
         return $this;
     }
 
@@ -116,7 +126,6 @@ class Room implements \JsonSerializable
     public function setLatitude($lat)
     {
         $this->lat = (float) $lat;
-
         return $this;
     }
 
@@ -128,7 +137,6 @@ class Room implements \JsonSerializable
     public function setLongitude($lon)
     {
         $this->lon = (float) $lon;
-
         return $this;
     }
 
@@ -136,5 +144,4 @@ class Room implements \JsonSerializable
     {
         return $this->lon;
     }
-
 }

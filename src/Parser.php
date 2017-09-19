@@ -2,28 +2,49 @@
 
 namespace RoomlistParser;
 
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
 use RoomlistParser\Models\Room;
 use PhpBinaryReader\Endian;
 
 class Parser
 {
-    const URL = 'http://haxball.com/list3';
-    private $data;
+    const DOMAIN = 'http://www.haxball.com/';
 
-    public function __construct()
+    /** @var ClientInterface */
+    private $client;
+
+    /** @var ReaderFactory */
+    private $readerFactory;
+
+    /** @var ModelFactory */
+    private $modelFactory;
+
+    public function __construct(
+        ClientInterface $client,
+        ReaderFactory $readerFactory,
+        ModelFactory $modelFactory
+    ) {
+        $this->client = $client;
+        $this->readerFactory = $readerFactory;
+        $this->modelFactory = $modelFactory;
+    }
+
+    public static function create()
     {
-        $fh = @fopen(self::URL, 'r');
-
-        if (!$fh) {
-            throw new \Exception('Unable to open roomlist file');
-        }
-
-        $this->data = gzuncompress(stream_get_contents($fh));
+        return new self(
+            new \GuzzleHttp\Client,
+            new ReaderFactory,
+            new ModelFactory
+        );
     }
 
     public function parse()
     {
-        $reader = new Reader($this->data, Endian::ENDIAN_BIG);
+        $response = $this->sendRequest();
+        $data = gzuncompress($response->getBody());
+
+        $reader = $this->readerFactory->create($data, Endian::ENDIAN_BIG);
         $reader->readBytes(5);
 
         $rooms = [];
@@ -38,7 +59,8 @@ class Parser
 
     private function parseRoom(Reader $reader)
     {
-        $room = (new Room)->setVersion($reader->readUint16())
+        $room = $this->modelFactory->createRoom()
+            ->setVersion($reader->readUint16())
             ->setId($reader->readStringAuto())
             ->setName($reader->readStringAuto())
             ->setPlayers($reader->readUint8())
@@ -49,5 +71,23 @@ class Parser
             ->setLongitude($reader->readSingle());
 
         return $room;
+    }
+
+    private function sendRequest()
+    {
+        $referer = self::DOMAIN . 'index.html';
+        $url = self::DOMAIN . 'list3';
+
+        $options = [
+            'headers' => [
+                'Referer' => $referer
+            ]
+        ];
+        
+        try {
+            return $this->client->request('GET', $url, $options);
+        } catch (RequestException $e) {
+            throw new \Exception('Unable to open roomlist file', null, $e);
+        }
     }
 }

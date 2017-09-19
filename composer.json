@@ -9,6 +9,8 @@
         }
     },
     "require": {
-        "mdurrant/php-binary-reader": "^1.0.8"
+        "php": ">=5.5",
+        "mdurrant/php-binary-reader": "^1.0.8",
+        "guzzlehttp/guzzle": "^6.3"
     }
 }

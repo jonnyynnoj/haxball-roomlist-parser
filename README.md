@@ -9,7 +9,7 @@ composer require jonnyynnoj/haxball-roomlist-parser
 ## Usage
 
 ```php
-$parser = new RoomlistParser\Parser();
+$parser = RoomlistParser\Parser::create();
 $rooms = $parser->parse();
 
 foreach ($rooms as $room) {
