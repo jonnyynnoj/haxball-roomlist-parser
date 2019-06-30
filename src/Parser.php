@@ -42,15 +42,14 @@ class Parser
     public function parse()
     {
         $response = $this->sendRequest();
-        $data = gzuncompress($response->getBody());
+        $data = $response->getBody();
 
         $reader = $this->readerFactory->create($data, Endian::ENDIAN_BIG);
-        $reader->readBytes(5);
+        $reader->readBytes(1);
 
         $rooms = [];
 
         while (!$reader->isEof()) {
-            $reader->readBytes(2);
             $rooms[] = $this->parseRoom($reader);
         }
 
@@ -59,16 +58,19 @@ class Parser
 
     private function parseRoom(Reader $reader)
     {
-        $room = $this->modelFactory->createRoom()
-            ->setVersion($reader->readUint16())
-            ->setId($reader->readStringAuto())
+        $room = $this->modelFactory->createRoom()    
+            ->setId($reader->readStringAuto());
+              
+        $reader->readUint16();
+                
+        $room->setVersion($reader->readUint8())
             ->setName($reader->readStringAuto())
-            ->setPlayers($reader->readUint8())
-            ->setMaxPlayers($reader->readUint8())
+            ->setCountry($reader->readStringAutoSingle())
+            ->setLongitude($reader->readSingle())
+            ->setLatitude($reader->readSingle())    
             ->setPassworded($reader->readUint8())
-            ->setCountry($reader->readStringAuto())
-            ->setLatitude($reader->readSingle())
-            ->setLongitude($reader->readSingle());
+            ->setMaxPlayers($reader->readUint8())
+            ->setPlayers($reader->readUint8());
 
         return $room;
     }
@@ -76,7 +78,7 @@ class Parser
     private function sendRequest()
     {
         $referer = self::DOMAIN . 'index.html';
-        $url = self::DOMAIN . 'list3';
+        $url = self::DOMAIN . 'rs/api/list';
 
         $options = [
             'headers' => [
