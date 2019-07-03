@@ -70,7 +70,7 @@ class Room implements \JsonSerializable
 
     public function setName($name)
     {
-        $this->name = (string) $name;
+        $this->name = preg_replace('/[^A-Za-z0-9]/', ' ', $name);
         return $this;
     }
 
