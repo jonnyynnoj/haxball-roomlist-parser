@@ -65,9 +65,14 @@ class Parser
                 
         $room->setVersion($reader->readUint8())
             ->setName($reader->readStringAuto())
-            ->setCountry($reader->readStringAutoSingle())
-            ->setLongitude($reader->readSingle())
-            ->setLatitude($reader->readSingle())    
+            ->setCountry($reader->readStringAutoSingle());
+			
+		// Location is little endian instead of big
+		$location = $reader->readBytes(8);        
+        $reader2 = $this->readerFactory->create($location, Endian::ENDIAN_LITTLE);
+		
+        $room->setLatitude($reader2->readSingle())
+            ->setLongitude($reader2->readSingle())    
             ->setPassworded($reader->readUint8())
             ->setMaxPlayers($reader->readUint8())
             ->setPlayers($reader->readUint8());
